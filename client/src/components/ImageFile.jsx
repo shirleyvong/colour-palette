@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-const ImageFile = () => {
+const ImageFile = ({ uploadFile }) => {
   const fileInput = useRef(null);
 
   const onButtonClick = () => {
@@ -9,7 +10,7 @@ const ImageFile = () => {
   };
 
   const onUpload = (event) => {
-    console.log(event.target.value);
+    uploadFile(event.target.files[0]);
   };
 
   return (
@@ -20,6 +21,10 @@ const ImageFile = () => {
       <button onClick={onButtonClick} type="button">Choose a file</button>
     </>
   );
+};
+
+ImageFile.propTypes = {
+  uploadFile: PropTypes.func.isRequired,
 };
 
 export default ImageFile;
