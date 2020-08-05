@@ -18,9 +18,11 @@ const ImageSelect = ({ uploadURL, uploadFile }) => {
         <button onClick={() => setSourceType(sourceTypes.UPLOAD)} type="button">Upload</button>
         <button onClick={() => setSourceType(sourceTypes.LINK)} type="button">Link</button>
       </div>
-      { sourceType === sourceTypes.UPLOAD
-        ? <ImageFile uploadFile={uploadFile} />
-        : <ImageLink uploadURL={uploadURL} /> }
+      <ImageSource>
+        { sourceType === sourceTypes.UPLOAD
+          ? <ImageFile uploadFile={uploadFile} />
+          : <ImageLink uploadURL={uploadURL} /> }
+      </ImageSource>
     </Container>
   );
 };
@@ -28,6 +30,16 @@ const ImageSelect = ({ uploadURL, uploadFile }) => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+`;
+
+const ImageSource = styled.div`
+  border: 1px solid black;
+  height: 125px;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
 `;
 
