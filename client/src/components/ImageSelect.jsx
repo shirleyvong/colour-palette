@@ -1,0 +1,34 @@
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import ImageFile from './ImageFile';
+import ImageLink from './ImageLink';
+
+const sourceTypes = {
+  UPLOAD: 'UPLOAD',
+  LINK: 'LINK',
+};
+
+const ImageSelect = ({ uploadURL, uploadFile }) => {
+  const [sourceType, setSourceType] = useState(sourceTypes.UPLOAD);
+
+  return (
+    <Container>
+      <h1>Select an image</h1>
+      <div>
+        <button onClick={() => setSourceType(sourceTypes.UPLOAD)} type="button">Upload</button>
+        <button onClick={() => setSourceType(sourceTypes.LINK)} type="button">Link</button>
+      </div>
+      { sourceType === sourceTypes.UPLOAD
+        ? <ImageFile uploadFile={uploadFile} />
+        : <ImageLink uploadURL={uploadURL} /> }
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export default ImageSelect;
