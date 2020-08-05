@@ -13,8 +13,11 @@ client/.env.production.local
 client/npm-debug.log*
 client/yarn-debug.log*
 client/yarn-error.log*
+client/debug.log*
+client/.eslintrc.json
 
 server/venv
 server/__pycache__
-
+server/app/__pycache__
+server/app/blueprints/__pycache__
 rust/target
