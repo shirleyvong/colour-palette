@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 
 const Colour = ({ colour }) => {
   return (
-    <div>
+    <Container>
       <StyledColour colour={colour} />
       <span>{colour}</span>
-    </div>
+    </Container>
   );
 };
 
@@ -21,5 +21,12 @@ const StyledColour = styled.div`
 Colour.propTypes = {
   colour: PropTypes.string.isRequired,
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 
 export default Colour;
