@@ -28,7 +28,10 @@ const ImageFile = ({ uploadFile }) => {
     event.preventDefault();
 
     const file = event.dataTransfer.files[0];
-    uploadFile(file);
+    const isImage = /^image\//.test(file.type);
+    if (isImage) {
+      uploadFile(file);
+    }
   };
 
   return (
@@ -57,7 +60,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center
+  align-items: center;
 `;
 
 ImageFile.propTypes = {
