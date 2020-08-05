@@ -5,8 +5,9 @@ import Results from './components/Results';
 const ColourPalettePage = () => {
   const [colours, setColours] = useState([]);
   const [imageFile, setImageFile] = useState();
+  const [imageURL, setImageURL] = useState('');
 
-  const uploadURL = (URL) => {
+  const uploadURL = (url) => {
     // TODO: make request to server
     console.log('Uploading URL');
   };
@@ -15,13 +16,22 @@ const ColourPalettePage = () => {
     // TODO: make request to server
     console.log('Uploading file');
     setImageFile(file);
+    setImageURLFromFile(file);
     setColours(['#f5bc42', '#e8cd92', '#92d8e8', '#e892bd', '#f2a0c9']);
+  };
+
+  const setImageURLFromFile = (file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageURL(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
     <div>
-      {colours && imageFile
-        ? <Results colours={colours} />
+      {colours && imageURL
+        ? <Results colours={colours} imageURL={imageURL} />
         : <ImageSelect uploadURL={uploadURL} uploadFile={uploadFile} />}
     </div>
   );

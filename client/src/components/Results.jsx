@@ -2,17 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import ColourPalette from './ColourPalette';
 
-const Results = ({ colours }) => {
+const Results = ({ colours, imageURL }) => {
   return (
     <Container>
-      <Image src="https://images.unsplash.com/photo-1596403387729-1a07549f082a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80" />
+      <Image src={imageURL} />
       <ColourPalette colours={colours} />
     </Container>
   );
 };
 
 const Image = styled.img`
-  width: 300px;
+  max-width: 300px;
   height: auto;
 `;
 
