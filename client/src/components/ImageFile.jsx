@@ -9,19 +9,56 @@ const ImageFile = ({ uploadFile }) => {
     fileInput.current.click();
   };
 
-  const onUpload = (event) => {
+  const handleFileSelect = (event) => {
     uploadFile(event.target.files[0]);
   };
 
+  const handleDragEnter = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
+  const handleDragOver = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
+  const handleDrop = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const file = event.dataTransfer.files[0];
+    uploadFile(file);
+  };
+
   return (
-    <>
-      <input ref={fileInput} onChange={onUpload} type="file" accept="image/*" style={{ display: 'none' }} />
+    <Container
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <input
+        ref={fileInput}
+        onChange={handleFileSelect}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
       <span>Drag and drop to upload</span>
       <span>or</span>
       <button onClick={onButtonClick} type="button">Choose a file</button>
-    </>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  height: inherit;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center
+`;
 
 ImageFile.propTypes = {
   uploadFile: PropTypes.func.isRequired,
