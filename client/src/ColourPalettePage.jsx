@@ -2,11 +2,16 @@ import React, { useState } from 'react';
 import ImageSelect from './components/ImageSelect';
 import Results from './components/Results';
 import axios from 'axios';
+import rgbHex from 'rgb-hex';
 
 const ColourPalettePage = () => {
   const [colours, setColours] = useState([]);
   const [imageFile, setImageFile] = useState();
   const [imageURL, setImageURL] = useState('');
+
+  const parseColours = (colours) => {
+    return colours.map((colour) => '#' + rgbHex(colour.red, colour.blue, colour.green));
+  }
 
   const uploadURL = (url) => {
     // TODO: make request to server
@@ -16,7 +21,6 @@ const ColourPalettePage = () => {
   const uploadFile = (file) => {
     console.log('Uploading file');
     setImageFile(file);
-    setImageURLFromFile(file);
 
     const formData = new FormData();
     formData.append('file', file);
@@ -28,12 +32,11 @@ const ColourPalettePage = () => {
           'Content-Type': 'multipart/form-data'
         }
       })
-      .then(res => {
-        console.log(res.data);
+      .then((res) => {
+        setColours(parseColours(res.data.colours))
+        setImageURLFromFile(file);
       })
       .catch(err => { console.log(err) });
-
-    setColours(['#f5bc42', '#e8cd92', '#92d8e8', '#e892bd', '#f2a0c9']);
   };
 
   const setImageURLFromFile = (file) => {
