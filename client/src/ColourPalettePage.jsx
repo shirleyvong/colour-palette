@@ -10,7 +10,7 @@ const ColourPalettePage = () => {
   const [imageURL, setImageURL] = useState('');
 
   const parseColours = (colours) => {
-    return colours.map((colour) => '#' + rgbHex(colour.red, colour.blue, colour.green));
+    return colours.map((colour) => '#' + rgbHex(colour.red, colour.green, colour.blue));
   }
 
   const uploadURL = (url) => {
@@ -49,7 +49,7 @@ const ColourPalettePage = () => {
 
   return (
     <div>
-      {colours && imageURL
+      {colours.length > 0 && imageURL
         ? <Results colours={colours} imageURL={imageURL} />
         : <ImageSelect uploadURL={uploadURL} uploadFile={uploadFile} />}
     </div>
