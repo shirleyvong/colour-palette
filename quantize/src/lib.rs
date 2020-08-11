@@ -1,55 +1,53 @@
-use cpython::{PyResult, Python, py_module_initializer, py_fn, PyDict, PyList};
-use std::collections::HashMap;
 use cpython::PythonObject;
+use cpython::{py_fn, py_module_initializer, PyDict, PyList, PyResult, Python};
+use std::collections::HashMap;
+
 mod quantize;
 
-// Expands to an extern "C" function that allows Python to load the rust code as 
-// a Python extension module
-// In lambda, type is Fn(Python, &PyModule) -> PyResult<()>
-// Called with module is imported, and is reponsible for adding the module's members
 py_module_initializer!(libquantize, |py, m| {
-    m.add(py, "__doc__", "This module is implemented in Rust.")?;
+  // Add functions as members of module. When the Python object is called, the Rust function
+  // is invoked
+  m.add(py, "quantize", py_fn!(py, quantize(py_list: PyList, num_partitions: usize)))?;
 
-    // Add functions as members of module 
-    // py_fn! returns a value of type PyObject. When this python object is called, it invokes
-    // the rust function.
-    m.add(py, "quantize", py_fn!(py, quantize(py_pixels: PyList, num_partitions: usize)))?;
-    Ok(())
+  Ok(())
 });
 
-fn quantize(py: Python, py_pixels: PyList, num_partitions: usize) -> PyResult<PyList>{
-    // convert python list of dicts with rgb values to rust vectors of hash maps
-    let mut rs_pixels = Vec::new();
-    for obj in py_pixels.iter(py) {
-        let py_pixel = obj.extract::<PyDict>(py).unwrap();
-        let mut rs_pixel = HashMap::new();
-        
-        let red_obj = py_pixel.get_item(py, "red").unwrap();
-        let red_val = red_obj.extract::<u32>(py).unwrap();
-        rs_pixel.insert("red", red_val);
+fn quantize(py: Python, py_list: PyList, num_partitions: usize) -> PyResult<PyList> {
+  // Convert Python list of dicts to Rust vectors of hash maps
+  let mut pixels = Vec::new();
+  for py_obj in py_list.iter(py) {
+    let py_pixel = py_obj.extract::<PyDict>(py).unwrap();
 
-        let green_obj = py_pixel.get_item(py, "green").unwrap();
-        let green_val = green_obj.extract::<u32>(py).unwrap();
-        rs_pixel.insert("green", green_val);
+    let red_val = colour_value(py, &py_pixel, "red");
+    let green_val = colour_value(py, &py_pixel, "green");
+    let blue_val = colour_value(py, &py_pixel, "blue");
 
-        let blue_obj = py_pixel.get_item(py, "blue").unwrap();
-        let blue_val = blue_obj.extract::<u32>(py).unwrap();
-        rs_pixel.insert("blue", blue_val);
+    let mut pixel = HashMap::new();
+    pixel.insert("red", red_val);
+    pixel.insert("green", green_val);
+    pixel.insert("blue", blue_val);
 
-        rs_pixels.push(rs_pixel);
+    pixels.push(pixel);
+  }
+
+  let colours = quantize::quantize(pixels, num_partitions);
+
+  // Convert Rust vector of hashmaps back to Python list of dicts
+  let mut py_objs = Vec::new();
+  for colour in &colours {
+    let py_dict = PyDict::new(py);
+    for (key, val) in colour.iter() {
+      py_dict.set_item(py, key, val).unwrap();
     }
+    // PyList holds a list of PyObjects so convert PyDict to PyObject
+    py_objs.push(py_dict.into_object());
+  }
 
-    let colours = quantize::quantize(rs_pixels, num_partitions);
+  Ok(PyList::new(py, &py_objs[..]))
+}
 
-    // Convert vector of hashmaps back to python list of dicts
-    let mut py_dict_vec = Vec::new();
-    for colour in colours.iter() {
-        let py_dict = PyDict::new(py);
-        for (key, val) in colour.iter() {
-            py_dict.set_item(py, key, val).unwrap();
-        }
-        py_dict_vec.push(py_dict.into_object());
-    }
-
-    Ok(PyList::new(py, &py_dict_vec[..]))
+fn colour_value(py: Python, dict: &PyDict, key: &str) -> u32 {
+  let py_obj = dict.get_item(py, key).unwrap();
+  let value = py_obj.extract::<u32>(py).unwrap();
+  value
 }

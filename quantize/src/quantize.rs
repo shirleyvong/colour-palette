@@ -1,43 +1,53 @@
-use std::collections::HashMap;
 use std::cmp::Ordering;
+use std::collections::HashMap;
 
 pub fn quantize(pixels: Vec<HashMap<&str, u32>>, num_partitions: usize) -> Vec<HashMap<&str, u32>> {
   let partitions = partition(pixels, num_partitions);
 
-  let rgb_colours: Vec<HashMap<&str, u32>> = partitions.into_iter().map(|p: Vec<HashMap<&str, u32>>| -> HashMap<&str, u32> {
-      let total_red = p.iter().fold(0, |acc, x| acc + x.get("red").unwrap());
-      let total_green = p.iter().fold(0, |acc, x| acc + x.get("green").unwrap());
-      let total_blue = p.iter().fold(0, |acc, x| acc + x.get("blue").unwrap());
+  let avg_colour = |partition: Vec<HashMap<&str, u32>>| -> HashMap<&str, u32> {
+    let total_red = partition
+      .iter()
+      .fold(0, |acc, x| acc + x.get("red").unwrap());
+    let total_green = partition
+      .iter()
+      .fold(0, |acc, x| acc + x.get("green").unwrap());
+    let total_blue = partition
+      .iter()
+      .fold(0, |acc, x| acc + x.get("blue").unwrap());
 
-      let length = p.len() as u32;
-      let mut avg_colour = HashMap::new();
-      avg_colour.insert("red", total_red / length);
-      avg_colour.insert("green", total_green / length);
-      avg_colour.insert("blue", total_blue / length);
+    let length = partition.len() as u32;
+    let mut avg_colour = HashMap::new();
+    avg_colour.insert("red", total_red / length);
+    avg_colour.insert("green", total_green / length);
+    avg_colour.insert("blue", total_blue / length);
 
-      avg_colour
-  }).collect();
+    avg_colour
+  };
 
+  let rgb_colours: Vec<HashMap<&str, u32>> = partitions.into_iter().map(avg_colour).collect();
   rgb_colours
 }
 
-fn partition(pixels: Vec<HashMap<&str, u32>>, num_partitions: usize) -> Vec<Vec<HashMap<&str, u32>>> {
+fn partition(
+  pixels: Vec<HashMap<&str, u32>>,
+  num_partitions: usize,
+) -> Vec<Vec<HashMap<&str, u32>>> {
   let mut partitions = Vec::new();
   partitions.push(pixels);
 
   while (&partitions).len() < num_partitions {
-      let (idx, colour) = largest_range_partition(&partitions);
-      let mut split_partition = partitions.remove(idx);
-      split_partition.sort_by(|l, r| -> Ordering {
-          let lval = l.get(&colour[..]).unwrap();
-          let rval = r.get(&colour[..]).unwrap();
-          (*lval).cmp(rval)
-      });
+    let (idx, colour) = largest_range_partition(&partitions);
+    let mut split_partition = partitions.remove(idx);
+    split_partition.sort_by(|l, r| -> Ordering {
+      let lval = l.get(&colour[..]).unwrap();
+      let rval = r.get(&colour[..]).unwrap();
+      (*lval).cmp(rval)
+    });
 
-      let median = split_partition.len() / 2;
-      partitions.push(split_partition.split_off(median));
-      partitions.push(split_partition);
-      println!("Split on {}", colour);
+    let median = split_partition.len() / 2;
+    partitions.push(split_partition.split_off(median));
+    partitions.push(split_partition);
+    println!("Split on {}", colour);
   }
 
   partitions
@@ -51,12 +61,12 @@ fn largest_range_partition(partitions: &Vec<Vec<HashMap<&str, u32>>>) -> (usize,
   let mut largest_range_colour = String::from("");
 
   for (idx, partition) in partitions.iter().enumerate() {
-      let (range, colour) = largest_colour_range(partition);
-      if range > largest_range {
-          largest_range = range;
-          largest_range_colour = colour;
-          largest_range_idx = idx;
-      }
+    let (range, colour) = largest_colour_range(partition);
+    if range > largest_range {
+      largest_range = range;
+      largest_range_colour = colour;
+      largest_range_idx = idx;
+    }
   }
 
   (largest_range_idx, largest_range_colour)
@@ -69,11 +79,11 @@ fn largest_colour_range(partition: &Vec<HashMap<&str, u32>>) -> (u32, String) {
   let blue_range = colour_range(partition, "blue");
 
   if red_range >= green_range && red_range >= blue_range {
-      (red_range, String::from("red"))
+    (red_range, String::from("red"))
   } else if green_range >= red_range && green_range >= blue_range {
-      (green_range, String::from("green"))
+    (green_range, String::from("green"))
   } else {
-      (blue_range, String::from("blue"))
+    (blue_range, String::from("blue"))
   }
 }
 
@@ -82,14 +92,14 @@ fn colour_range(partition: &Vec<HashMap<&str, u32>>, colour: &str) -> u32 {
   let mut min = u32::MAX;
   let mut max = u32::MIN;
 
-  for pixel in partition.iter() {
-      let value = *pixel.get(colour).unwrap();
-      if value <= min {
-          min = value;
-      } else if value >= max {
-          max = value
-      }
-  } 
+  for pixel in partition {
+    let value = pixel.get(colour).unwrap();
+    if value <= &min {
+      min = *value;
+    } else if value >= &max {
+      max = *value
+    }
+  }
 
   let range = max - min;
   range
