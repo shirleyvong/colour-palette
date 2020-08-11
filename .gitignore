@@ -20,4 +20,5 @@ server/venv
 server/__pycache__
 server/app/__pycache__
 server/app/blueprints/__pycache__
-rust/target
+
+quantize/target
