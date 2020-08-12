@@ -1,6 +1,4 @@
 from flask import Blueprint, request, current_app
-from api.colour_quantization import get_colour_palette
-from api.libquantize import quantize
 from PIL import Image
 import json
 from sqlalchemy import inspect
@@ -53,8 +51,24 @@ def get_palettes():
 
 @palette.route('', methods=['POST'])
 def save_palette():
-  palette = Palette(colours=["123463", "a3h42v"])
+  # if request.is_json():
+  body = request.get_json()
+  print(body)
+  palette = Palette(colours=body['colours'])
   db.session.add(palette)
   db.session.commit()
 
+  return palette.to_dict()
+
+
+@palette.route('/<id>', methods=['DELETE'])
+def delete_palette(id):
+  Palette.query.filter_by(id=id).delete()
+  db.session.commit()
+  return ({ 'status': 200 }, 200)
+
+
+@palette.route('/<id>')
+def get_palette(id):
+  palette = Palette.query.get(id)
   return palette.to_dict()
