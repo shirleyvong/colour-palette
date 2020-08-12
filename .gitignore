@@ -18,7 +18,7 @@ client/.eslintrc.json
 
 server/venv
 server/__pycache__
-server/app/__pycache__
-server/app/blueprints/__pycache__
+server/api/__pycache__
+server/api/blueprints/__pycache__
 
 quantize/target
