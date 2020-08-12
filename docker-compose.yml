@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  db:
+    image: 'postgres:latest'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=quantize-app
+      - POSTGRES_USER=secret
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./db/:/docker-entrypoint-initdb.d/
