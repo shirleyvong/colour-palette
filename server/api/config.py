@@ -1,6 +1,6 @@
 class Config(object):
   DEBUG = True
-  POSTGRES_URL = '127.0.0.1:5432'
+  POSTGRES_URL = 'db:5432'
   POSTGRES_USER = 'secret'
   POSTGRES_PW = 'secret'
   POSTGRES_DB = 'quantize-app'
