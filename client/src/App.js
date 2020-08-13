@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 import CreatePalettePage from './pages/CreatePalettePage';
+import PalettePage from './pages/PalettePage';
 import Navbar from './components/Navbar';
 import Theme from './styles/Theme';
 
@@ -17,6 +18,9 @@ function App() {
         <Navbar />
         <Div>
           <Switch>
+            <Route path="/">
+              <PalettePage />
+            </Route>
             <Route path="/">
               <CreatePalettePage />
             </Route>
@@ -29,7 +33,7 @@ function App() {
 
 const Div = styled.div`
   display: flex;
-  justify-content: center;
+  flex-grow: 1;
 `;
 
 export default App;

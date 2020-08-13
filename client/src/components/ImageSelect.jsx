@@ -13,11 +13,11 @@ const ImageSelect = ({ uploadURL, uploadFile }) => {
 
   return (
     <Container>
-      <h1>Select an image</h1>
-      <div>
+      <h1>Create a colour palette</h1>
+      {/* <div>
         <button onClick={() => setSourceType(sourceTypes.UPLOAD)} type="button">Upload</button>
         <button onClick={() => setSourceType(sourceTypes.LINK)} type="button">Link</button>
-      </div>
+      </div> */}
       <ImageSource>
         { sourceType === sourceTypes.UPLOAD
           ? <ImageFile uploadFile={uploadFile} />
@@ -28,13 +28,12 @@ const ImageSelect = ({ uploadURL, uploadFile }) => {
 };
 
 const Container = styled.div`
-  display: flex;
+  ${'' /* display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; */}
 `;
 
 const ImageSource = styled.div`
-  border: 1px solid black;
   height: 125px;
   width: 450px;
   display: flex;
