@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { FiMenu } from 'react-icons/fi';
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuButtonClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <Nav>
       <LeftSection>
@@ -21,6 +28,7 @@ const Navbar = () => {
       </LeftSection>
 
       <RightSection>
+        <Hamburger onClick={handleMenuButtonClick} />
         <List>
           <ListItem>
             <StyledLink to="/login">Login</StyledLink>
@@ -41,6 +49,10 @@ const List = styled.ul`
   padding: 0;
   margin: 8px;
   align-items: center;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Nav = styled.nav`
@@ -69,7 +81,7 @@ const ListItem = styled.li`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-  color: #737373;
+  color: ${(props) => props.theme.colours.tertiary};
 
   &:hover {
     font-weight: bold;
@@ -77,7 +89,17 @@ const StyledLink = styled(Link)`
 `;
 
 const Logo = styled.img`
-  max-height: 100%;
+  height: 100%;
+`;
+
+const Hamburger = styled(FiMenu)`
+  height: 100%;
+  font-size: 2em;
+  color: ${(props) => props.theme.colours.primary};
+  
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 
 export default Navbar;
