@@ -13,7 +13,10 @@ const ColourPalette = ({ colours }) => {
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  flex-grow: 1;
+  flex-direction: column;
+  width: 100%;
 `;
 
 ColourPalette.propTypes = {

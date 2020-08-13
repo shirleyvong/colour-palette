@@ -5,8 +5,10 @@ const StyledButton = styled.button`
   background-color: ${props => props.theme.colours.primary};
   border: none;
   font: inherit;
-  border-radius: 15px;
-  padding: 7px;
+  border-radius: 50px;
+  margin: 14px;
+  min-width: 180px;
+  min-height: 48px;
 `;
 
 const StyledHeader = styled.h1`

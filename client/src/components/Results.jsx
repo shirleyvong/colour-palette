@@ -5,6 +5,7 @@ import ColourPalette from './ColourPalette';
 const Results = ({ colours, imageURL }) => {
   return (
     <Container>
+      <h1>Colour Palette</h1>
       <Image src={imageURL} />
       <ColourPalette colours={colours} />
     </Container>
