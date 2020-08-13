@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import ImageSelect from '../components/ImageSelect';
-import Results from '../components/Results';
 import axios from 'axios';
 import rgbHex from 'rgb-hex';
 import styled from 'styled-components';
+import PalettePage from './PalettePage';
+import ImageSelect from '../components/ImageSelect';
+import api from '../services/api';
 
 const CreatePalettePage = () => {
   const [colours, setColours] = useState([]);
@@ -25,16 +26,10 @@ const CreatePalettePage = () => {
 
     const formData = new FormData();
     formData.append('file', file);
-    
-    axios.post('/palette',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+
+    api.createPalette(formData)
       .then((res) => {
-        setColours(parseColours(res.data.colours))
+        setColours(parseColours(res.colours))
         setImageURLFromFile(file);
       })
       .catch(err => { console.log(err) });
@@ -48,19 +43,38 @@ const CreatePalettePage = () => {
     reader.readAsDataURL(file);
   };
 
+  const clearImage = () => {
+    setColours([]);
+    setImageFile();
+    setImageURL('');
+  };
+
+  const buttons = [
+    {
+      text: 'Save',
+      onClick: () => console.log('saving'),
+      colour: undefined,
+    },
+    {
+      text: 'New',
+      onClick: clearImage,
+      colour: undefined,
+    },
+  ];
+
   return (
     <Div>
       {colours.length > 0 && imageURL
-        ? <Results colours={colours} imageURL={imageURL} />
+        ? <PalettePage colours={colours} imageURL={imageURL} buttons={buttons} />
         : <ImageSelect uploadURL={uploadURL} uploadFile={uploadFile} />}
-      {colours.length > 0 && <button onClick={() => {setColours([])}}>Try again with new pic</button>}
-      {colours.length > 0 && <button onClick={() => {uploadFile(imageFile)}}>Try again</button>}
     </Div>
   );
 };
 
 const Div = styled.div`
-  background-color: white;
+  flex-grow: 1;
+  height: 100%;
+  justify-content: center;
 `;
 
 export default CreatePalettePage;
