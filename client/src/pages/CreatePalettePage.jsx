@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import ImageSelect from './components/ImageSelect';
-import Results from './components/Results';
+import ImageSelect from '../components/ImageSelect';
+import Results from '../components/Results';
 import axios from 'axios';
 import rgbHex from 'rgb-hex';
+import styled from 'styled-components';
 
-const ColourPalettePage = () => {
+const CreatePalettePage = () => {
   const [colours, setColours] = useState([]);
   const [imageFile, setImageFile] = useState();
   const [imageURL, setImageURL] = useState('');
@@ -48,12 +49,18 @@ const ColourPalettePage = () => {
   };
 
   return (
-    <div>
+    <Div>
       {colours.length > 0 && imageURL
         ? <Results colours={colours} imageURL={imageURL} />
         : <ImageSelect uploadURL={uploadURL} uploadFile={uploadFile} />}
-    </div>
+      {colours.length > 0 && <button onClick={() => {setColours([])}}>Try again with new pic</button>}
+      {colours.length > 0 && <button onClick={() => {uploadFile(imageFile)}}>Try again</button>}
+    </Div>
   );
 };
 
-export default ColourPalettePage;
+const Div = styled.div`
+  background-color: white;
+`;
+
+export default CreatePalettePage;
