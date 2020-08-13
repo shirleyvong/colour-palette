@@ -2,8 +2,8 @@ from flask import Blueprint, request, current_app
 from PIL import Image
 import json
 from sqlalchemy import inspect
-
-from api.models import Palette, db;
+from api.libquantize import quantize
+from api.models import Palette, db
 
 palette = Blueprint('palette', __name__)
 
