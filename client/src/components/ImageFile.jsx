@@ -1,11 +1,12 @@
-import React, { useRef } from 'react';
-import styled from 'styled-components';
+import React, { useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { IoIosImage } from 'react-icons/io';
+import styled, { ThemeContext } from 'styled-components';
 import { StyledButton } from '../styles/StyledComponents';
-import { IoIosImage } from 'react-icons/io'
 
 const ImageFile = ({ uploadFile }) => {
   const fileInput = useRef(null);
+  const themeContext = useContext(ThemeContext);
 
   const onButtonClick = () => {
     fileInput.current.click();
@@ -51,7 +52,9 @@ const ImageFile = ({ uploadFile }) => {
       />
       <StyledIcon />
       <span>Drop an image or</span>
-      <StyledButton onClick={onButtonClick} type="button">Choose a file</StyledButton>
+      <StyledButton onClick={onButtonClick} type="button" colour={themeContext.colours.primary}>
+        Choose a file
+      </StyledButton>
     </Container>
   );
 };
@@ -63,16 +66,16 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: ${props => `2px dashed ${props.theme.colours.primary}`};
+  border: ${(props) => `2px dashed ${props.theme.colours.primary}`};
   border-radius: 20px;
   padding: 15px 0 15px 0;
   max-width: 800px;
 `;
 
 const StyledIcon = styled(IoIosImage)`
-  color: ${props => props.theme.colours.primary};
-  font-size: ${props => props.theme.iconSize};
-`
+  color: ${(props) => props.theme.colours.primary};
+  font-size: ${(props) => props.theme.iconSize};
+`;
 
 ImageFile.propTypes = {
   uploadFile: PropTypes.func.isRequired,

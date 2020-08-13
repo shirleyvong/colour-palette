@@ -13,24 +13,41 @@ const ImageSelect = ({ uploadURL, uploadFile }) => {
 
   return (
     <Container>
-      <h1>Create a colour palette</h1>
-      {/* <div>
-        <button onClick={() => setSourceType(sourceTypes.UPLOAD)} type="button">Upload</button>
-        <button onClick={() => setSourceType(sourceTypes.LINK)} type="button">Link</button>
-      </div> */}
-      <ImageSource>
-        { sourceType === sourceTypes.UPLOAD
-          ? <ImageFile uploadFile={uploadFile} />
-          : <ImageLink uploadURL={uploadURL} /> }
-      </ImageSource>
+      <InnerContainer>
+        <h1>Create a colour palette</h1>
+        {/* <div>
+          <button onClick={() => setSourceType(sourceTypes.UPLOAD)} type="button">Upload</button>
+          <button onClick={() => setSourceType(sourceTypes.LINK)} type="button">Link</button>
+        </div> */}
+        <ImageSource>
+          { sourceType === sourceTypes.UPLOAD
+            ? <ImageFile uploadFile={uploadFile} />
+            : <ImageLink uploadURL={uploadURL} /> }
+        </ImageSource>
+      </InnerContainer>
     </Container>
   );
 };
 
 const Container = styled.div`
-  ${'' /* display: flex;
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 20px;
+  background: ${(props) => props.theme.colours.background};
+  background: ${(props) => props.theme.colours.backgroundGradient};
+  height: 100%;
+  box-sizing: border-box;
+`;
+
+const InnerContainer = styled.div`
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 100%;
+  display: flex;
+  align-items: center;
   flex-direction: column;
-  align-items: center; */}
+  padding: 10px 20px 20px 20px;
+  max-width: 768px;
 `;
 
 const ImageSource = styled.div`

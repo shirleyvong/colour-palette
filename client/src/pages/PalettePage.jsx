@@ -1,22 +1,21 @@
-import React, {} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ColourPalette from '../components/ColourPalette';
 import { StyledButton } from '../styles/StyledComponents';
 
-const colours = ['#e27d60', '#85dcb0', '#e8a87c', '#c38d9e', '#41b3a3'];
-
-const PalettePage = () => {
+const PalettePage = ({ imageURL, colours, buttons }) => {
   return (
-    <Container>
+    <Container colours={colours}>
       <InnerContainer>
         <h1>Colour Palette</h1>
         <Content>
-          <Image src="https://images.unsplash.com/photo-1597286039335-b0d08ca3fd56?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80" />
+          <Image src={imageURL} />
           <ColourPalette colours={colours} />
         </Content>
         <ButtonContainer>
-          <StyledButton>Save</StyledButton>
-          <StyledButton>New</StyledButton>
+          {buttons.map((btn) => (
+            <StyledButton colour={btn.colour} onClick={btn.onClick}>{btn.text}</StyledButton>
+          ))}
         </ButtonContainer>
       </InnerContainer>
     </Container>
@@ -28,8 +27,12 @@ const Container = styled.div`
   justify-content: center;
   flex-grow: 1;
   padding: 20px;
-  background: rgb(195,141,158);
-  background: linear-gradient(42deg, rgba(195,141,158,1) 0%, rgba(226,125,96,1) 33%, rgba(232,168,124,1) 57%, rgba(65,179,163,1) 85%, rgba(133,220,176,1) 100%);
+  background: ${(props) => props.colours[0]};
+  background: ${(props) => `linear-gradient(to right, ${props.colours[0]}, ${props.colours[1]}, ${props.colours[2]})`}; 
+  transition: background-color 5s ease;
+  height: 100%;
+  box-sizing: border-box;
+  transition: opacity 0.5s ease-out;
 `;
 
 const InnerContainer = styled.div`
