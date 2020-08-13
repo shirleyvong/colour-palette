@@ -53,8 +53,9 @@ def get_palettes():
 def save_palette():
   # if request.is_json():
   body = request.get_json()
-  print(body)
-  palette = Palette(colours=body['colours'])
+  colours = [c[1:] for c in body['colours'] if c[0] == '#']
+  print(colours)
+  palette = Palette(colours=colours)
   db.session.add(palette)
   db.session.commit()
 

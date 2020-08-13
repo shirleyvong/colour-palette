@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import rgbHex from 'rgb-hex';
 import styled from 'styled-components';
 import PalettePage from './PalettePage';
@@ -49,10 +48,16 @@ const CreatePalettePage = () => {
     setImageURL('');
   };
 
+  const savePalette = async () => {
+    console.log(colours);
+    const result = await api.savePalette({ colours });
+    console.log(result);
+  };
+
   const buttons = [
     {
       text: 'Save',
-      onClick: () => console.log('saving'),
+      onClick: savePalette,
       colour: undefined,
     },
     {
