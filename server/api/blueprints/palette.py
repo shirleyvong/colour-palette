@@ -10,28 +10,37 @@ palette = Blueprint('palette', __name__)
 @palette.route('/generate', methods=['POST'])
 def create_palette():
   if 'file' not in request.files:
-    return 'request does not contain file part'
-  
+    return 'Request form data must contain "file"', 400
+
   file = request.files['file']
   if file.filename == '':
-    return 'no file was selected'
+    return 'No file was selected', 400
 
-  # TODO: validate image 
-  current_app.logger.info(file.filename)
+  # verify file format
+  img = Image.open(file)
+  img_format = img.format.lower()
+  if img_format not in current_app.config['UPLOAD_EXTENSIONS']:
+    return 'File extension must be' + ','.join(current_app.config['UPLOAD_EXTENSIONS']), 400
 
-  im = Image.open(file)
-  n = 5
+  # reduce image size 
+  width = img.width;
+  height = img.height;
+  if height > width:
+    reduce_factor = height / 100
+  else: 
+    reduce_factor = width / 100
+  reduced_img = img.reduce(int(reduce_factor))
 
-  # rust method
   pixels = []
-  for p in list(im.getdata()):
+  for p in list(reduced_img.getdata()):
     pixels.append({
       'red': p[0],
       'green': p[1],
       'blue': p[2],
     })
 
-  results = quantize(pixels, n)
+  num_colours = 5
+  results = quantize(pixels, num_colours)
 
   return {
     'colours': results
