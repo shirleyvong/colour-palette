@@ -1,11 +1,11 @@
 from flask import Blueprint, request, current_app
 from PIL import Image
-import json
-import io
-import base64
 from sqlalchemy import inspect
 from api.libquantize import quantize
 from api.models import Palette, db
+import json
+import io
+import base64
 
 palette = Blueprint('palette', __name__)
 
@@ -13,6 +13,7 @@ def validate_image(file):
   img = Image.open(file)
   img_format = img.format.lower()
   return img_format in current_app.config['UPLOAD_EXTENSIONS']
+
 
 @palette.route('/generate', methods=['POST'])
 def create_palette():
@@ -28,14 +29,12 @@ def create_palette():
 
   # reduce image size 
   img = Image.open(file)
-  width = img.width;
-  height = img.height;
-  if height > width:
-    reduce_factor = height / 100
-  else: 
-    reduce_factor = width / 100
-  reduced_img = img.reduce(int(reduce_factor))
-
+  if img.height > img.width:
+    reduce_factor = img.height / 100
+  else:
+ reduced_img = img.reduce(int(reduce_factor))
+   reduce_factor = img.width / 100
+  
   pixels = []
   for p in list(reduced_img.getdata()):
     pixels.append({
@@ -48,7 +47,7 @@ def create_palette():
   results = quantize(pixels, num_colours)
 
   return {
-    'colours': results
+    'colours': results,
   }
 
 
@@ -60,7 +59,7 @@ def get_palettes():
   for p in palettes:
     results.append({
     'id': p.id,
-    'colours': ['#{}'.format(colour) for colour in p.colours]
+    'colours': ['#{}'.format(colour) for colour in p.colours],
   })
 
   return { 'palettes': results }
@@ -78,30 +77,17 @@ def save_palette():
   if not validate_image(file):
     return 'File extension must be' + ','.join(current_app.config['UPLOAD_EXTENSIONS']), 400
 
-  colours = json.loads(request.form['colours'])
-  colours = [c[1:] for c in colours if c[0] == '#']
-  print(colours)
-
   # reduce size of image
   img = Image.open(file)
-  # width = img.width
-  # height = img.height
-  # max_dimension = 600
-  # if height > width:
-  #   reduce_factor = height / max_dimension
-  # else:
-  #   reduce_factor = width / max_dimension
-
   max_size = (600, 600)
   img.thumbnail(max_size)
-  
-  # resized_width = width // reduce_factor
-  # resized_height = height // reduce_factor
-  # reduced_img = img.resize((int(resized_width), int(resized_height)))
-  
+
   stream = io.BytesIO()
   img.save(stream, format="JPEG")
   img_as_bytes = stream.getvalue()
+
+  colours = json.loads(request.form['colours'])
+  colours = [c[1:] for c in colours if c[0] == '#']
 
   palette = Palette(colours=colours, image=img_as_bytes)
   db.session.add(palette)
@@ -109,7 +95,7 @@ def save_palette():
 
   return {
     'id': palette.id,
-    'colours': ['#{}'.format(colour) for colour in palette.colours]
+    'colours': ['#{}'.format(colour) for colour in palette.colours],
   }
 
 @palette.route('/<id>', methods=['DELETE'])
@@ -125,5 +111,5 @@ def get_palette(id):
   return {
     'id': palette.id,
     'colours': ['#{}'.format(colour) for colour in palette.colours],
-    'image': base64.b64encode(palette.image).decode('ascii')
+    'image': base64.b64encode(palette.image).decode('ascii'),
   }
