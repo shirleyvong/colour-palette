@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Palette from './Palette';
 import FileSelector from '../components/FileSelector';
@@ -24,6 +25,7 @@ const StyledButton = styled(Button)`
 `;
 
 const CreatePalettePage = ({ setBackground }) => {
+  const history = useHistory();
   const [colours, setColours] = useState([]);
   const [imageFile, setImageFile] = useState();
   const [imageSource, setImageSource] = useState('');
@@ -64,7 +66,7 @@ const CreatePalettePage = ({ setBackground }) => {
     formData.append('file', imageFile);
     formData.append('colours', JSON.stringify(colours));
     const result = await api.savePalette(formData);
-    console.log(result);
+    history.push(`/palettes/${result.id}`);
   };
 
   const isPaletteGenerated = colours.length > 0 && imageSource;
