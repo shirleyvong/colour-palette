@@ -60,7 +60,7 @@ def get_palettes():
   for p in palettes:
     results.append({
     'id': p.id,
-    'colours': p.colours
+    'colours': ['#{}'.format(colour) for colour in p.colours]
   })
 
   return { 'palettes': results }
@@ -109,7 +109,7 @@ def save_palette():
 
   return {
     'id': palette.id,
-    'colours': palette.colours
+    'colours': ['#{}'.format(colour) for colour in palette.colours]
   }
 
 @palette.route('/<id>', methods=['DELETE'])
@@ -122,4 +122,8 @@ def delete_palette(id):
 @palette.route('/<id>')
 def get_palette(id):
   palette = Palette.query.get(id)
-  return palette.to_dict()
+  return {
+    'id': palette.id,
+    'colours': ['#{}'.format(colour) for colour in palette.colours],
+    'image': base64.b64encode(palette.image).decode('ascii')
+  }
