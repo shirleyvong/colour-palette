@@ -50,7 +50,10 @@ const CreatePalettePage = () => {
 
   const savePalette = async () => {
     console.log(colours);
-    const result = await api.savePalette({ colours });
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    formData.append('colours', JSON.stringify(colours));
+    const result = await api.savePalette(formData);
     console.log(result);
   };
 
