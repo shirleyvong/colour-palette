@@ -12,8 +12,14 @@ const createPalette = async (formData) => {
 };
 
 // Colours must have hex values
-const savePalette = async (colours) => {
-  const { data } = await axios.post('/api/palettes', colours);
+const savePalette = async (formData) => {
+  const { data } = await axios.post('/api/palettes',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   return data;
 };
 
@@ -29,6 +35,7 @@ const getPalette = async (id) => {
 
 const getPalettes = async () => {
   const { data } = await axios.get('/api/palettes');
+  return data;
 };
 
 export default {
