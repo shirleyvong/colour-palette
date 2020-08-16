@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import Palette from './Palette';
+import Palette from '../components/Palette';
 import FileSelector from '../components/FileSelector';
 import api from '../services/api';
 import { StyledButton as Button } from '../styles/StyledComponents';

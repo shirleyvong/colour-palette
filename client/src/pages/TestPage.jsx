@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import api from '../services/api';
 import styled from 'styled-components';
 import ColourPalette from '../components/ColourPalette';
-import Palette from '../pages/Palette';
+import Palette from '../components/Palette';
 
 const Container = styled.div`
   background: ${(props) => props.colours[0]};

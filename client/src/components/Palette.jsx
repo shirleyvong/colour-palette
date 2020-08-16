@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ColourPalette from '../components/ColourPalette';
+import ColourPalette from './ColourPalette';
 
 const Palette = ({ imageSource, colours }) => {
   return (
