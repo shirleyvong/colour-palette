@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import CreatePalettePage from './pages/CreatePalettePage';
 import PalettesPage from './pages/PalettesPage';
 import Navbar from './components/Navbar';
-import TestPage from './pages/TestPage';
+import ViewPalettePage from './pages/ViewPalettePage';
 import Theme from './styles/Theme';
 
 const Content = styled.div`
@@ -40,7 +40,7 @@ function App() {
           <Content>
             <Switch>
               <Route path="/palettes/:id">
-                <TestPage />
+                <ViewPalettePage setBackground={setBackground} />
               </Route>
               <Route path="/palettes">
                 <PalettesPage />
