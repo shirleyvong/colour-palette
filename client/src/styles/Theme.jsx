@@ -6,10 +6,9 @@ const theme = {
     primary: '#f2976c',
     secondary: '#fbe8a6',
     tertiary: '#737373',
-    backgroundGradient: 'linear-gradient(78deg, rgba(247,195,139,1) 0%, rgba(242,151,108,1) 100%)',
-    background: 'rgb(247,195,139)',
+    backgroundGradient: 'linear-gradient(rgba(247,195,139,1) 0%, rgba(242,151,108,1) 100%)',
   },
-  iconSize: '2em',
+  iconSize: '3em',
 };
 
 const Theme = ({ children }) => (

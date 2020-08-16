@@ -1,10 +1,27 @@
 import React, { useRef, useContext } from 'react';
-import PropTypes from 'prop-types';
 import { IoIosImage } from 'react-icons/io';
 import styled, { ThemeContext } from 'styled-components';
 import { StyledButton } from '../styles/StyledComponents';
 
-const ImageFile = ({ uploadFile }) => {
+const StyledIcon = styled(IoIosImage)`
+  color: ${(props) => props.theme.colours.primary};
+  font-size: ${(props) => props.theme.iconSize};
+`;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  border: 2px dashed ${(props) => props.theme.colours.primary};
+  border-radius: 30px;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+`;
+
+const FileSelector = ({ uploadFile }) => {
   const fileInput = useRef(null);
   const themeContext = useContext(ThemeContext);
 
@@ -59,26 +76,4 @@ const ImageFile = ({ uploadFile }) => {
   );
 };
 
-const Container = styled.div`
-  height: inherit;
-  width: inherit;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: ${(props) => `2px dashed ${props.theme.colours.primary}`};
-  border-radius: 20px;
-  padding: 15px 0 15px 0;
-  max-width: 800px;
-`;
-
-const StyledIcon = styled(IoIosImage)`
-  color: ${(props) => props.theme.colours.primary};
-  font-size: ${(props) => props.theme.iconSize};
-`;
-
-ImageFile.propTypes = {
-  uploadFile: PropTypes.func.isRequired,
-};
-
-export default ImageFile;
+export default FileSelector;

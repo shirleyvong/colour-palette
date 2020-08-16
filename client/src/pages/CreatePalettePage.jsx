@@ -1,55 +1,65 @@
-import React, { useState } from 'react';
-import rgbHex from 'rgb-hex';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import PalettePage from './PalettePage';
-import ImageSelect from '../components/ImageSelect';
+import Palette from './Palette';
+import FileSelector from '../components/FileSelector';
 import api from '../services/api';
+import { StyledButton as Button } from '../styles/StyledComponents';
 
-const CreatePalettePage = () => {
+const Container = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+const StyledButton = styled(Button)`
+  margin: 10px 10px 0px 10px;
+`;
+
+const CreatePalettePage = ({ setBackground }) => {
   const [colours, setColours] = useState([]);
   const [imageFile, setImageFile] = useState();
-  const [imageURL, setImageURL] = useState('');
+  const [imageSource, setImageSource] = useState('');
 
-  const parseColours = (colours) => {
-    return colours.map((colour) => '#' + rgbHex(colour.red, colour.green, colour.blue));
-  }
+  useEffect(() => () => setBackground(''), []);
 
-  const uploadURL = (url) => {
-    // TODO: make request to server
-    console.log('Uploading URL');
+  const setImageSourceFromFile = (file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageSource(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const uploadFile = (file) => {
-    console.log('Uploading file');
-    setImageFile(file);
-
     const formData = new FormData();
     formData.append('file', file);
 
     api.createPalette(formData)
       .then((res) => {
-        setColours(parseColours(res.colours))
-        setImageURLFromFile(file);
+        setImageFile(file);
+        setColours(res.colours);
+        setImageSourceFromFile(file);
+        setBackground(`linear-gradient(${res.colours[0]}, ${res.colours[1]}, ${res.colours[2]})`);
       })
-      .catch(err => { console.log(err) });
+      .catch((err) => { console.log(err); });
   };
 
-  const setImageURLFromFile = (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageURL(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const clearImage = () => {
+  const resetState = () => {
     setColours([]);
     setImageFile();
-    setImageURL('');
+    setImageSource('');
+    setBackground('');
   };
 
   const savePalette = async () => {
-    console.log(colours);
     const formData = new FormData();
     formData.append('file', imageFile);
     formData.append('colours', JSON.stringify(colours));
@@ -57,32 +67,27 @@ const CreatePalettePage = () => {
     console.log(result);
   };
 
-  const buttons = [
-    {
-      text: 'Save',
-      onClick: savePalette,
-      colour: undefined,
-    },
-    {
-      text: 'New',
-      onClick: clearImage,
-      colour: undefined,
-    },
-  ];
+  const isPaletteGenerated = colours.length > 0 && imageSource;
 
   return (
-    <Div>
-      {colours.length > 0 && imageURL
-        ? <PalettePage colours={colours} imageURL={imageURL} buttons={buttons} />
-        : <ImageSelect uploadURL={uploadURL} uploadFile={uploadFile} />}
-    </Div>
+    <Container>
+      {isPaletteGenerated
+        ? (
+          <>
+            <Palette colours={colours} imageSource={imageSource} />
+            <ButtonContainer>
+              <StyledButton onClick={savePalette}>Save</StyledButton>
+              <StyledButton onClick={resetState}>Back</StyledButton>
+            </ButtonContainer>
+          </>
+        ) : (
+          <>
+            <h1>Create a colour palette</h1>
+            <FileSelector uploadFile={uploadFile} />
+          </>
+        )}
+    </Container>
   );
 };
-
-const Div = styled.div`
-  flex-grow: 1;
-  height: 100%;
-  justify-content: center;
-`;
 
 export default CreatePalettePage;

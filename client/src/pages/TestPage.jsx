@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import api from '../services/api';
 import styled from 'styled-components';
 import ColourPalette from '../components/ColourPalette';
-import PalettePage from '../pages/PalettePage';
+import Palette from '../pages/Palette';
 
 const Container = styled.div`
   background: ${(props) => props.colours[0]};
@@ -56,15 +56,7 @@ const TestPage = () => {
   ]
 
   return (
-    <PalettePage colours={colours} imageURL={`data:image/jpeg;base64,${b64Image}`} buttons={buttons}/>
-    // <Container colours={colours}>
-    //   <InnerContainer>
-
-    //     {b64Image && <img src={`data:image/jpeg;base64,${b64Image}`} />}
-    //     {colours}
-    //     <ColourPalette colours={colours} />
-    //   </InnerContainer>
-    // </Container>
+    <Palette colours={colours} imageURL={`data:image/jpeg;base64,${b64Image}`} buttons={buttons}/>
   );
 }
 

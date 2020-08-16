@@ -31,12 +31,6 @@ const StyledColour = styled.div`
   flex-grow: 1;
 
   height: 100%;
-  min-height: 4rem;
-
-  @media (max-width: 768px) {
-    height: 4rem;
-  }
-
   box-shadow:  0px 0px 40px 0px rgba(0,0,0,0.12), 0px 6px 12px rgba(0,0,0,0.08);
 `;
 
