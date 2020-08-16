@@ -3,10 +3,17 @@ import styled, { ThemeContext } from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import api from '../services/api';
 import PalettePreview from '../components/PalettePreview';
-
 import { StyledButton } from '../styles/StyledComponents';
 
-const PalettesPage = () => {
+const Container = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
+const SavedPalettesPage = () => {
   const themeContext = useContext(ThemeContext);
   const history = useHistory();
   const [palettes, setPalettes] = useState([]);
@@ -16,7 +23,7 @@ const PalettesPage = () => {
       .then((res) => {
         const results = res.palettes.map((palette) => ({
           id: palette.id,
-          colours: palette.colours.map((colour) => `#${colour}`),
+          colours: palette.colours,
         }));
         setPalettes(results);
       });
@@ -47,28 +54,11 @@ const PalettesPage = () => {
   );
 };
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 768px;
-`;
-
 const Palettes = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
+  overflow: auto;
 `;
-  
-  // @media (min-width: 768px) {
-  //   grid-template-columns: repeat(2, auto);
-  // }
 
-  // @media (min-width: 1024px) {
-  //   grid-template-columns: repeat(3, auto);
-  // }
-
-  // @media (min-width: 1440px) {
-  //   grid-template-columns: repeat(4, auto);
-  // }
-export default PalettesPage;
+export default SavedPalettesPage;

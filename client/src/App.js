@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 import CreatePalettePage from './pages/CreatePalettePage';
-import PalettesPage from './pages/PalettesPage';
+import SavedPalettesPage from './pages/SavedPalettesPage';
 import Navbar from './components/Navbar';
 import ViewPalettePage from './pages/ViewPalettePage';
 import Theme from './styles/Theme';
@@ -20,6 +20,7 @@ const Content = styled.div`
   flex-grow: 1;
   width: 100%;
   max-width: 768px;
+  overflow: hidden;
 `;
 
 const Container = styled.div`
@@ -30,7 +31,7 @@ const Container = styled.div`
 `;
 
 function App() {
-  const [background, setBackground] = useState('rgb(247,195,139)');
+  const [background, setBackground] = useState('');
 
   return (
     <Theme>
@@ -43,7 +44,7 @@ function App() {
                 <ViewPalettePage setBackground={setBackground} />
               </Route>
               <Route path="/palettes">
-                <PalettesPage />
+                <SavedPalettesPage />
               </Route>
               <Route path="/">
                 <CreatePalettePage setBackground={setBackground} />

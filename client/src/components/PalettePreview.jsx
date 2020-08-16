@@ -1,33 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const PalettePreview = ({ colours, image, id }) => {
+const PalettePreview = ({ colours, id }) => {
   return (
-    <Container>
-      <ColourContainer href={`/palettes/${id}`}>
-        {colours.map(c => <Colour colour={c} />)}
-      </ColourContainer>
+    <Container href={`/palettes/${id}`}>
+      {colours.map((colour) => <Colour colour={colour} />)}
     </Container>
   );
 };
 
-const Container = styled.div`
-  display: inline-flex;
-  flex-direction: column;
+const Container = styled.a`
+  display: flex;
   height: 80px;
-  width: 300px;
+  width: 200px;
   border-radius: 20px;
-  overflow: hidden;
   margin: 10px;
+  overflow: hidden;
 `;
 
 const Colour = styled.div`
   background-color: ${(props) => props.colour};
-  flex-grow: 1;
-`;
-
-const ColourContainer = styled.a`
-  display: flex;
   flex-grow: 1;
 `;
 
