@@ -14,7 +14,10 @@ const PalettesPage = () => {
   useEffect(() => {
     api.getPalettes()
       .then((res) => {
-        const results = res.palettes.map((palette) => palette.colours.map((colour) => `#${colour}`));
+        const results = res.palettes.map((palette) => ({
+          id: palette.id,
+          colours: palette.colours.map((colour) => `#${colour}`),
+        }));
         setPalettes(results);
       });
   }, []);
@@ -29,7 +32,7 @@ const PalettesPage = () => {
       {palettes.length > 0
         ? (
           <Palettes>
-            {palettes.map((p) => <PalettePreview colours={p} />)}
+            {palettes.map((p) => <PalettePreview colours={p.colours} key={p.id} id={p.id} />)}
           </Palettes>
         )
         : (
@@ -48,23 +51,24 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 768px;
 `;
 
 const Palettes = styled.div`
-  display: grid;
-  grid-template-columns: repeat(1, auto);
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, auto);
-  }
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, auto);
-  }
-
-  @media (min-width: 1440px) {
-    grid-template-columns: repeat(4, auto);
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
+  
+  // @media (min-width: 768px) {
+  //   grid-template-columns: repeat(2, auto);
+  // }
 
+  // @media (min-width: 1024px) {
+  //   grid-template-columns: repeat(3, auto);
+  // }
+
+  // @media (min-width: 1440px) {
+  //   grid-template-columns: repeat(4, auto);
+  // }
 export default PalettesPage;

@@ -100,6 +100,7 @@ def save_palette():
 
 @palette.route('/<id>', methods=['DELETE'])
 def delete_palette(id):
+  # TODO: handle when palette doesn't exist.
   Palette.query.filter_by(id=id).delete()
   db.session.commit()
   return ({}, 200)
