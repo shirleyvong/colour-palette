@@ -7,13 +7,13 @@ const PalettePage = ({ imageURL, colours, buttons }) => {
   return (
     <Container colours={colours}>
       <InnerContainer>
-        <h1>Colour Palette</h1>
+        {/* <h1>Colour Palette</h1> */}
         <Content>
           <Image src={imageURL} />
           <ColourPalette colours={colours} />
         </Content>
         <ButtonContainer>
-          {buttons.map((btn) => (
+          {buttons && buttons.map((btn) => (
             <StyledButton colour={btn.colour} onClick={btn.onClick}>{btn.text}</StyledButton>
           ))}
         </ButtonContainer>
@@ -41,8 +41,10 @@ const InnerContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 10px 20px 20px 20px;
+
+  padding: 20px;
   max-width: 768px;
+  box-sizing: border-box;
 `;
 
 const ButtonContainer = styled.div`
@@ -57,9 +59,10 @@ const Content = styled.div`
   width: 100%;
 
   @media (min-width: 768px) {
-    flex-direction: row;
+    flex-direction: column;
   }
 `;
+
 
 const Image = styled.img`
   border-radius: 10px;
@@ -67,6 +70,9 @@ const Image = styled.img`
   max-width: 400px;
   max-height: 300px;
   
+  width: 100%;
+  height: auto;
+
   @media (min-width: 768px) {
     margin-right: 10px;
   }
