@@ -32,8 +32,8 @@ def create_palette():
   if img.height > img.width:
     reduce_factor = img.height / 100
   else:
- reduced_img = img.reduce(int(reduce_factor))
-   reduce_factor = img.width / 100
+    reduce_factor = img.width / 100
+  reduced_img = img.reduce(int(reduce_factor))
   
   pixels = []
   for p in list(reduced_img.getdata()):
@@ -44,10 +44,13 @@ def create_palette():
     })
 
   num_colours = 5
-  results = quantize(pixels, num_colours)
+  rgb_values = quantize(pixels, num_colours)
+
+  # convert dict with rgb values to hex
+  hex_values = ['#%02x%02x%02x' % (val['red'], val['green'], val['blue']) for val in rgb_values]
 
   return {
-    'colours': results,
+    'colours': hex_values,
   }
 
 
@@ -100,7 +103,6 @@ def save_palette():
 
 @palette.route('/<id>', methods=['DELETE'])
 def delete_palette(id):
-  # TODO: handle when palette doesn't exist.
   Palette.query.filter_by(id=id).delete()
   db.session.commit()
   return ({}, 200)
