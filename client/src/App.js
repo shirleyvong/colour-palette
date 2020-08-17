@@ -7,16 +7,16 @@ import {
 import styled from 'styled-components';
 import CreatePalettePage from './pages/CreatePalettePage';
 import SavedPalettesPage from './pages/SavedPalettesPage';
-import Navbar from './components/Navbar';
 import ViewPalettePage from './pages/ViewPalettePage';
+import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
+import Navbar from './components/Navbar';
 import Theme from './styles/Theme';
+import AuthContext from './context/auth';
 
 const Content = styled.div`
-  box-sizing: border-box;
   background-color: white;
-  margin: 20px;
   align-self: center;
-  padding: 20px;
   flex-grow: 1;
   width: 100%;
   max-width: 768px;
@@ -45,6 +45,12 @@ function App() {
               </Route>
               <Route path="/palettes">
                 <SavedPalettesPage />
+              </Route>
+              <Route path="/register">
+                <RegisterPage setBackground={setBackground} />
+              </Route>
+              <Route path="/login">
+                <LoginPage setBackground={setBackground} />
               </Route>
               <Route path="/">
                 <CreatePalettePage setBackground={setBackground} />

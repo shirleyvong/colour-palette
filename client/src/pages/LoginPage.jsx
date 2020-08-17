@@ -20,16 +20,16 @@ const Image = styled.img`
 `;
 
 const RegisterPage = () => {
-  const register = (username, password) => {
-    console.log(`registered ${username}, ${password}`);
+  const login = (username, password) => {
+    console.log(`logging in`);
   };
 
   return (
     <Container>
-      <h1>Register</h1>
+      <h1>Login</h1>
       <div>
         <Image src='/undraw_add_color_19gv.svg' />
-        <UserForm handleButtonClick={register} buttonText={'Register'} />
+        <UserForm handleButtonClick={login} buttonText={'login'} />
       </div>
     </Container>
   );

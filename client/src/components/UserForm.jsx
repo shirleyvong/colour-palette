@@ -1,4 +1,27 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import { StyledButton as Button } from '../styles/StyledComponents';
+
+const Input = styled.input`
+  height: 2rem;
+  background: #ececec;
+  border: none;
+  width: 300px;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const StyledButton = styled(Button)`
+  margin: 10px;
+`;
 
 const UserForm = ({ buttonText, handleButtonClick }) => {
   const [username, setUsername] = useState('');
@@ -18,13 +41,11 @@ const UserForm = ({ buttonText, handleButtonClick }) => {
   };
 
   return (
-    <form>
-      <label>Username</label>
-      <input onChange={handleUsernameChange} placeholder="username" />
-      <label>Password</label>
-      <input onChange={handlePasswordChange} placeholder="password" type="password" />
-      <button onClick={onButtonClick}>{buttonText}</button>
-    </form>
+    <Form>
+      <Input onChange={handleUsernameChange} placeholder="Username" />
+      <Input onChange={handlePasswordChange} placeholder="Password" type="password" />
+      <StyledButton onClick={onButtonClick}>{buttonText}</StyledButton>
+    </Form>
   );
 };
 
