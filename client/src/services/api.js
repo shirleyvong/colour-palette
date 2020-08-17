@@ -38,10 +38,56 @@ const getPalettes = async () => {
   return data;
 };
 
+const register = async (username, password) => {
+  const { data } = await axios.post('/api/auth/register',
+    {
+      username,
+      password
+    }
+  );
+  return data;
+};
+
+const login = async (username, password) => {
+  const { data } = await axios.post('/api/auth/login',
+    {
+      username,
+      password
+    }
+  );
+  return data;
+};
+
+const logout = async (authToken) => {
+  const { data } = await axios.get('/api/auth/logout',
+    { 
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    },
+  );
+  return data;
+};
+
+const getUserStatus = async (authToken) => {
+  const { data } = await axios.get('/api/auth/status',
+    { 
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    },
+  );
+  return data;
+};
+
 export default {
   createPalette,
   savePalette,
   deletePalette,
   getPalette,
   getPalettes,
+  register,
+  login,
+  logout,
+  getUserStatus,
 };
