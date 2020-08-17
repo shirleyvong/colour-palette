@@ -6,14 +6,14 @@ CREATE TABLE IF NOT EXISTS palettes (
 
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
-  username char(50) NOT NULL,
-  password char(50) NOT NULL,
+  username varchar(50) NOT NULL,
+  password varchar(255) NOT NULL,
   UNIQUE(username)
 );
 
 CREATE TABLE IF NOT EXISTS blacklisted_tokens (
   id SERIAL PRIMARY KEY,
-  token char(500) NOT NULL,
+  token varchar(500) NOT NULL,
   blacklisted_on timestamp NOT NULL,
   UNIQUE(token)
 );
