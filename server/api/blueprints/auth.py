@@ -23,7 +23,11 @@ def register():
 
     auth_token = new_user.encode_auth_token(new_user.id)
 
-    return { 'auth_token': auth_token.decode() }, 201
+    return {
+      'auth_token': auth_token.decode(),
+      'id': new_user.id,
+      'username': new_user.username
+    }, 201
   except Exception as e:
     app.logger.info(e)
     return 'Something unexpected happened, try again later', 500
@@ -41,12 +45,17 @@ def login():
     user = User.query.filter_by(username=body['username']).first()
     if user and bcrypt.check_password_hash(user.password, body['password']):
       auth_token = user.encode_auth_token(user.id)
-      return { 'auth_token': auth_token.decode() }, 200
+      return {
+      'auth_token': auth_token.decode(),
+      'id': user.id,
+      'username': user.username
+      }, 200
 
     return 'The username and password combination does not exist.', 404
   except Exception as e:
     app.logger.info(e)
     return 'Something unexpected happened, try again later', 500
+
 
 @auth.route('/status')
 def status():
@@ -68,6 +77,7 @@ def status():
 
   # invalid Authorization header
   return 'Request must contain Authorization header with a valid token', 401
+
 
 @auth.route('/logout', methods=['POST'])
 def logout():
