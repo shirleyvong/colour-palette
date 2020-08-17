@@ -11,5 +11,5 @@ class Config(object):
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
   # Config for uploading images
-  MAX_CONTENT_LENGTH = 500000 # 500kb in bytes
+  MAX_CONTENT_LENGTH = 1 * 1000000 # in MB
   UPLOAD_EXTENSIONS = ['jpg', 'png', 'jpeg']
