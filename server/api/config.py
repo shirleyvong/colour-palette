@@ -1,4 +1,7 @@
+import os
+
 class Config(object):
+  SECRET_KEY = os.getenv('SECRET_KEY')
   DEBUG = True
   POSTGRES_URL = '0.0.0.0:5432'
   POSTGRES_USER = 'secret'

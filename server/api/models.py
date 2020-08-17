@@ -3,6 +3,7 @@ from sqlalchemy_serializer import SerializerMixin
 from flask import current_app as app
 from flask_bcrypt import Bcrypt
 import datetime
+import jwt
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -33,7 +34,29 @@ class User(db.Model):
 
   def __init__(self, username, password):
     self.username = username
-    self.password = bcrypt.generate_password_hash(password, app.config['SALT_ROUNDS'])
+    self.password = bcrypt.generate_password_hash(password)
+
+  def encode_auth_token(self, user_id):
+    try:
+      payload = {
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+        'iat': datetime.datetime.utcnow(),
+        'sub': user_id
+      }
+      return jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    except Exception as e:
+      app.logger.info(e)
+      return e
+
+  @staticmethod
+  def decode_auth_token(auth_token):
+    try:
+      payload = jwt.decode(auth_token, app.config['SECRET_KEY'])
+      return payload['sub']
+    except jwt.ExpiredSignatureError:
+      return 'Signature expired, please log in again.'
+    except jwt.InvalidTokenError:
+      return 'Invalid token, please log in again.'
 
 
 class BlacklistedToken(db.Model):
