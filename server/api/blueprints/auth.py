@@ -1,5 +1,7 @@
 from flask import Blueprint, request, current_app as app
-from api.models import User, db, bcrypt
+from api.models import User, db, bcrypt, BlacklistedToken
+import time
+
 auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['POST'])
@@ -57,6 +59,30 @@ def status():
         if not isinstance(result, str):
           user = User.query.filter_by(id=result).first()
           return { 'id': user.id, 'username': user.username }, 200
+        else:
+          # invalid token
+          return result, 401
+      except Exception as e:
+        app.logger.info(e)
+        return 'Something unexpected happened, try again later', 500
+
+  # invalid Authorization header
+  return 'Request must contain Authorization header with a valid token', 401
+
+@auth.route('/logout', methods=['POST'])
+def logout():
+  auth_header = request.headers.get('Authorization')
+  if auth_header and auth_header.lower().startswith('bearer '):
+    auth_token = auth_header.split(' ')[1]
+    if auth_token:
+      try:
+        result = User.decode_auth_token(auth_token)
+        if not isinstance(result, str):
+          blacklisted_token = BlacklistedToken(token=auth_token)
+          db.session.add(blacklisted_token)
+          db.session.commit()
+
+          return '', 200
         else:
           # invalid token
           return result, 401

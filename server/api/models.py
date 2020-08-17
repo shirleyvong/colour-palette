@@ -39,7 +39,7 @@ class User(db.Model):
   def encode_auth_token(self, user_id):
     try:
       payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
         'iat': datetime.datetime.utcnow(),
         'sub': user_id
       }
@@ -51,12 +51,19 @@ class User(db.Model):
   @staticmethod
   def decode_auth_token(auth_token):
     try:
+      is_blacklisted = BlacklistedToken.is_blacklisted(auth_token)
+      if is_blacklisted:
+        return 'Token is blacklisted, please log in again'
+
       payload = jwt.decode(auth_token, app.config['SECRET_KEY'])
       return payload['sub']
     except jwt.ExpiredSignatureError:
       return 'Signature expired, please log in again.'
     except jwt.InvalidTokenError:
       return 'Invalid token, please log in again.'
+    except Exception as e:
+      app.logger.info(e)
+      return e
 
 
 class BlacklistedToken(db.Model):
@@ -69,3 +76,11 @@ class BlacklistedToken(db.Model):
   def __init__(self, token):
     self.token = token
     self.blacklisted_on = datetime.datetime.now()
+
+  @staticmethod
+  def is_blacklisted(token):
+    blacklisted_token = BlacklistedToken.query.filter_by(token=str(token)).first()
+    if blacklisted_token:
+      return True
+    else:
+      return False
