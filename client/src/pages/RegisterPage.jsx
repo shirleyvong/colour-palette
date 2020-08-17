@@ -28,7 +28,7 @@ const RegisterPage = () => {
     <Container>
       <h1>Register</h1>
       <div>
-        <Image src='/undraw_add_color_19gv.svg' />
+        <Image src='/undraw_color_palette_yamk.svg' />
         <UserForm handleButtonClick={register} buttonText={'Register'} />
       </div>
     </Container>

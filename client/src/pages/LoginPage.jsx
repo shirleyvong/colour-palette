@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import UserForm from '../components/UserForm';
 import api from '../services/api';
-import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
@@ -19,20 +19,20 @@ const Image = styled.img`
   margin: 20px;
 `;
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const login = (username, password) => {
-    console.log(`logging in`);
+    console.log('logging in');
   };
 
   return (
     <Container>
       <h1>Login</h1>
       <div>
-        <Image src='/undraw_add_color_19gv.svg' />
-        <UserForm handleButtonClick={login} buttonText={'login'} />
+        <Image src="/undraw_authentication_fsn5.svg" />
+        <UserForm handleButtonClick={login} buttonText="Login" />
       </div>
     </Container>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

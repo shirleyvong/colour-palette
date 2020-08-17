@@ -24,6 +24,14 @@ const StyledButton = styled(Button)`
   margin: 10px 10px 0px 10px;
 `;
 
+const Image = styled.img`
+  max-height: 400px;
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  margin: 20px;
+`;
+
 const CreatePalettePage = ({ setBackground }) => {
   const history = useHistory();
   const [colours, setColours] = useState([]);
@@ -86,6 +94,7 @@ const CreatePalettePage = ({ setBackground }) => {
           <>
             <h1>Create a colour palette</h1>
             <FileSelector uploadFile={uploadFile} />
+            <Image src='/undraw_add_color_19gv.svg' />
           </>
         )}
     </Container>
