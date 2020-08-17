@@ -45,3 +45,24 @@ def login():
   except Exception as e:
     app.logger.info(e)
     return 'Something unexpected happened, try again later', 500
+
+@auth.route('/status')
+def status():
+  auth_header = request.headers.get('Authorization')
+  if auth_header and auth_header.lower().startswith('bearer '):
+    auth_token = auth_header.split(' ')[1]
+    if auth_token:
+      try:
+        result = User.decode_auth_token(auth_token)
+        if not isinstance(result, str):
+          user = User.query.filter_by(id=result).first()
+          return { 'id': user.id, 'username': user.username }, 200
+        else:
+          # invalid token
+          return result, 401
+      except Exception as e:
+        app.logger.info(e)
+        return 'Something unexpected happened, try again later', 500
+
+  # invalid Authorization header
+  return 'Request must contain Authorization header with a valid token', 401
