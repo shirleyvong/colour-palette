@@ -45,7 +45,7 @@ const Colours = ({ colours }) => {
   return (
     <Container>
       { colours.map((colour) => (
-        <StyledColour colour={colour} textColour={getTextColour(colour)}>
+        <StyledColour colour={colour} textColour={getTextColour(colour)} key={colour}>
           <CopyToClipboard text={colour}>
             <Text>{colour}</Text>
           </CopyToClipboard>

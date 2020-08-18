@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled, { ThemeContext } from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import api from '../services/api';
 import PalettePreview from '../components/PalettePreview';
 import { StyledButton } from '../styles/StyledComponents';
@@ -16,18 +16,30 @@ const Container = styled.div`
 const SavedPalettesPage = () => {
   const themeContext = useContext(ThemeContext);
   const history = useHistory();
-  const [palettes, setPalettes] = useState([]);
+  const { username } = useParams();
+  const [palettes, setPalettes] = useState(undefined);
 
   useEffect(() => {
-    api.getPalettes()
-      .then((res) => {
-        const results = res.palettes.map((palette) => ({
-          id: palette.id,
-          colours: palette.colours,
-        }));
-        setPalettes(results);
-      });
-  }, []);
+    if (username) {
+      api.getPalettesByUsername(username)
+        .then((res) => {
+          const results = res.palettes.map((palette) => ({
+            id: palette.id,
+            colours: palette.colours,
+          }));
+          setPalettes(results);
+        });
+    } else {
+      api.getAllPalettes()
+        .then((res) => {
+          const results = res.palettes.map((palette) => ({
+            id: palette.id,
+            colours: palette.colours,
+          }));
+          setPalettes(results);
+        });
+    }
+  }, [username]);
 
   const onButtonClick = () => {
     history.push('/');
@@ -35,8 +47,11 @@ const SavedPalettesPage = () => {
 
   return (
     <Container>
-      <h1>My Palettes</h1>
-      {palettes.length > 0
+      {username
+        ? <h1>{username}'s Palettes</h1>
+        : <h1>Explore Palettes</h1>
+      }
+      {palettes && palettes.length > 0
         ? (
           <Palettes>
             {palettes.map((p) => <PalettePreview colours={p.colours} key={p.id} id={p.id} />)}
@@ -45,9 +60,9 @@ const SavedPalettesPage = () => {
         : (
           <>
             <p>There are no saved colour palettes.</p>
-            <StyledButton onClick={onButtonClick} type="button" colour={themeContext.colours.primary}>
+            {/* <StyledButton onClick={onButtonClick} type="button" colour={themeContext.colours.primary}>
               Create a palette
-            </StyledButton>
+            </StyledButton> */}
           </>
         )}
     </Container>

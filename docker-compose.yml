@@ -11,15 +11,10 @@ services:
     volumes:
       - ./db/:/docker-entrypoint-initdb.d/
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
     ports:
-      - '5000:5000'
+      - '9000:9000'
     environment:
       - FLASK_APP=api
-      - FLASK_ENV=DEVELOPMENT
-    volumes:
-      - ./server/:/app/
+      - SECRET_KEY=notsosecretkey
     depends_on:
       - db

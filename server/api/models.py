@@ -22,7 +22,7 @@ class Palette(db.Model, SerializerMixin):
   def as_dict(self):
     return {
     'id': self.id,
-    'colours': self.colours
+    'colours': self.colours,
   }
 
 
@@ -39,12 +39,13 @@ class User(db.Model):
 
   def encode_auth_token(self, user_id):
     try:
+      expiry_date = datetime.datetime.utcnow() + datetime.timedelta(days=1)
       payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
+        'exp': expiry_date,
         'iat': datetime.datetime.utcnow(),
-        'sub': user_id
+        'sub': user_id,
       }
-      return jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+      return jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256'), expiry_date
     except Exception as e:
       app.logger.info(e)
       return e

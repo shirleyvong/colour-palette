@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const PalettePreview = ({ colours, id }) => {
   return (
     <Container href={`/palettes/${id}`}>
-      {colours.map((colour) => <Colour colour={colour} />)}
+      {colours.map((colour) => <Colour colour={colour} key={colour} />)}
     </Container>
   );
 };

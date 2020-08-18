@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import UserForm from '../components/UserForm';
 import api from '../services/api';
 
@@ -19,9 +20,23 @@ const Image = styled.img`
   margin: 20px;
 `;
 
-const LoginPage = () => {
+const LoginPage = ({ isAuthenticated, setAuthorizationData, authData }) => {
+  const history = useHistory();
+
+  useEffect(() => {
+    // Redirect to user page if already logged in
+    if (isAuthenticated()) {
+      history.push(`/palettes/${authData.userID}`);
+    }
+  }, [authData, history, isAuthenticated]);
+
   const login = (username, password) => {
-    console.log('logging in');
+    api.login(username, password)
+      .then((res) => {
+        setAuthorizationData(res.auth_token, res.expiry_date, res.username, res.user_id);
+        history.push(`/palettes/users/${res.username}`);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

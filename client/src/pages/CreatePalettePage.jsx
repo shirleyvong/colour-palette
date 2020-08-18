@@ -25,20 +25,23 @@ const StyledButton = styled(Button)`
 `;
 
 const Image = styled.img`
-  max-height: 400px;
+  max-height: 400px
   max-width: 300px;
   width: 100%;
   height: auto;
   margin: 20px;
 `;
 
-const CreatePalettePage = ({ setBackground }) => {
+const CreatePalettePage = ({ isAuthenticated: checkAuth, authData }) => {
   const history = useHistory();
   const [colours, setColours] = useState([]);
   const [imageFile, setImageFile] = useState();
   const [imageSource, setImageSource] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => () => setBackground(''), []);
+  useEffect(() => {
+    setIsAuthenticated(checkAuth(authData));
+  }, [authData, checkAuth])
 
   const setImageSourceFromFile = (file) => {
     const reader = new FileReader();
@@ -49,15 +52,11 @@ const CreatePalettePage = ({ setBackground }) => {
   };
 
   const uploadFile = (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    api.createPalette(formData)
+    api.generatePalette(file)
       .then((res) => {
         setImageFile(file);
         setColours(res.colours);
         setImageSourceFromFile(file);
-        setBackground(`linear-gradient(${res.colours[0]}, ${res.colours[1]}, ${res.colours[2]})`);
       })
       .catch((err) => { console.log(err); });
   };
@@ -66,15 +65,13 @@ const CreatePalettePage = ({ setBackground }) => {
     setColours([]);
     setImageFile();
     setImageSource('');
-    setBackground('');
   };
 
   const savePalette = async () => {
-    const formData = new FormData();
-    formData.append('file', imageFile);
-    formData.append('colours', JSON.stringify(colours));
-    const result = await api.savePalette(formData);
-    history.push(`/palettes/${result.id}`);
+    if (isAuthenticated) {
+      const result = await api.savePalette(imageFile, colours, authData.authToken);
+      history.push(`/palettes/${result.id}`);
+    }
   };
 
   const isPaletteGenerated = colours.length > 0 && imageSource;
@@ -85,10 +82,10 @@ const CreatePalettePage = ({ setBackground }) => {
         ? (
           <>
             <Palette colours={colours} imageSource={imageSource} />
-            <ButtonContainer>
-              <StyledButton onClick={savePalette}>Save</StyledButton>
-              <StyledButton onClick={resetState}>Back</StyledButton>
-            </ButtonContainer>
+              <ButtonContainer>
+                {isAuthenticated && <StyledButton onClick={savePalette}>Save</StyledButton>}
+                <StyledButton onClick={resetState}>Back</StyledButton>
+              </ButtonContainer>
           </>
         ) : (
           <>

@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const createPalette = async (formData) => {
+const generatePalette = async (imageFile) => {
+  const formData = new FormData();
+  formData.append('file', imageFile);
+
   const { data } = await axios.post('/api/palettes/generate',
     formData,
     {
@@ -11,20 +14,33 @@ const createPalette = async (formData) => {
   return data;
 };
 
-// Colours must have hex values
-const savePalette = async (formData) => {
+const savePalette = async (imageFile, colours, authToken) => {
+  const formData = new FormData();
+  formData.append('file', imageFile);
+  formData.append('colours', JSON.stringify(colours));
+
   const { data } = await axios.post('/api/palettes',
     formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${authToken}`,
       },
-    });
+    }
+  );
+
   return data;
 };
 
-const deletePalette = async (id) => {
-  const { data } = await axios.delete(`/api/palettes/${id}`);
+const deletePalette = async (id, authToken) => {
+  const { data } = await axios.delete(`/api/palettes/${id}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+    }
+  );
+
   return data;
 };
 
@@ -33,10 +49,20 @@ const getPalette = async (id) => {
   return data;
 };
 
-const getPalettes = async () => {
+const getAllPalettes = async () => {
   const { data } = await axios.get('/api/palettes');
   return data;
 };
+
+// const getPalettesByUserId = async (userID) => {
+//   const { data } = await axios.get(`/api/palettes/users/${userID}`);
+//   return data;
+// }
+
+const getPalettesByUsername = async (username) => {
+  const { data } = await axios.get(`/api/palettes/users/${username}`);
+  return data;
+}
 
 const register = async (username, password) => {
   const { data } = await axios.post('/api/auth/register',
@@ -45,6 +71,7 @@ const register = async (username, password) => {
       password
     }
   );
+
   return data;
 };
 
@@ -55,6 +82,7 @@ const login = async (username, password) => {
       password
     }
   );
+
   return data;
 };
 
@@ -66,6 +94,7 @@ const logout = async (authToken) => {
       },
     },
   );
+
   return data;
 };
 
@@ -77,15 +106,18 @@ const getUserStatus = async (authToken) => {
       },
     },
   );
+
   return data;
 };
 
 export default {
-  createPalette,
+  generatePalette,
   savePalette,
   deletePalette,
   getPalette,
-  getPalettes,
+  // getPalettesByUserId,
+  getPalettesByUsername,
+  getAllPalettes,
   register,
   login,
   logout,

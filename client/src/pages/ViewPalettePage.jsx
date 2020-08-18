@@ -17,36 +17,45 @@ const StyledButton = styled(Button)`
   margin: 10px 10px 0px 10px;
 `;
 
-const ViewPalettePage = ({ setBackground }) => {
+const ViewPalettePage = ({ isAuthenticated: checkAuth, authData }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [author, setAuthor] = useState('');
   const [colours, setColours] = useState([]);
   const [b64Image, setB64Image] = useState('');
   const { id } = useParams();
   const history = useHistory();
 
   useEffect(() => {
+    setIsAuthenticated(checkAuth(authData));
+  }, [authData, checkAuth])
+
+  useEffect(() => {
     api.getPalette(id)
       .then((res) => {
-        setBackground(`linear-gradient(${res.colours[0]}, ${res.colours[1]}, ${res.colours[2]})`);
         setColours(res.colours);
         setB64Image(res.image);
+        setAuthor(res.username);
       })
       .catch((err) => console.log(err));
-
-    return () => setBackground('');
-  }, []);
+  }, [id]);
 
   const deletePalette = () => {
-    api.deletePalette(id)
-      .then((res) => {
-        history.push('/palettes');
-      })
-      .catch((err) => console.log(err));
-  };
+    if (isAuthenticated && authData.username === author) {
+      api.deletePalette(id, authData.authToken)
+        .then((res) => {
+          history.push(`/palettes/users/${res.username}`);
+        })
+        .catch((err) => console.log(err));
+      };
+  }
 
   return (
     <Container>
+      <span>By {author}</span>
       <Palette colours={colours} imageSource={`data:image/jpeg;base64,${b64Image}`} />
-      <StyledButton onClick={deletePalette}>Delete </StyledButton>
+      {isAuthenticated && authData.username === author && (
+        <StyledButton onClick={deletePalette}>Delete</StyledButton>
+      )}
     </Container>
   );
 };

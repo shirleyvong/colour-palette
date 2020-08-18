@@ -21,6 +21,13 @@ const Container = styled.div`
   height: 100%;
 `;
 
+const Info = styled.div`
+  color: ${(props) => props.theme.colours.tertiary};
+  text-align: center;
+  padding: 10px;
+  font-size: 0.8rem;
+`;
+
 const FileSelector = ({ uploadFile }) => {
   const fileInput = useRef(null);
   const themeContext = useContext(ThemeContext);
@@ -68,10 +75,14 @@ const FileSelector = ({ uploadFile }) => {
         style={{ display: 'none' }}
       />
       <StyledIcon />
-      <span>Drop an image or</span>
+      <h3>Drop an image or</h3>
       <StyledButton onClick={onButtonClick} type="button" colour={themeContext.colours.primary}>
         Choose a file
       </StyledButton>
+      <Info>
+        <div>Maximum file size: 1MB</div>
+        <div>Supported types: jpeg, jpg, png</div>
+      </Info>
     </Container>
   );
 };
