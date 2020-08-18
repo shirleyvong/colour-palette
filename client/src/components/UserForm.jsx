@@ -11,6 +11,7 @@ const Input = styled.input`
   padding: 10px;
   box-sizing: border-box;
   border-radius: 10px;
+  font: inherit;
 `;
 
 const Form = styled.form`

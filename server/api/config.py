@@ -2,11 +2,10 @@ import os
 
 class Config(object):
   SECRET_KEY = os.getenv('SECRET_KEY')
-  DEBUG = True
-  POSTGRES_URL = '0.0.0.0:5432'
-  POSTGRES_USER = 'secret'
-  POSTGRES_PW = 'secret'
-  POSTGRES_DB = 'quantize-app'
+  POSTGRES_URL = os.getenv('POSTGRES_URL')
+  POSTGRES_USER = os.getenv('POSTGRES_USER')
+  POSTGRES_PW = os.getenv('POSTGRES_PW')
+  POSTGRES_DB = os.getenv('POSTGRES_DB')
   SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 

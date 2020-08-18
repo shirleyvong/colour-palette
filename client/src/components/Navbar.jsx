@@ -1,41 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FiMenu } from 'react-icons/fi';
 
-const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Navbar = ({ isAuthenticated: checkAuth, authData, logout }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleMenuButtonClick = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  useEffect(() => {
+    setIsAuthenticated(checkAuth(authData));
+  }, [authData, checkAuth])
 
   return (
     <Nav>
       <LeftSection>
-        <Logo src="/logo.svg" alt="logo" />
+        <StyledLogo role="img">
+          🎨
+        </StyledLogo>
         <List>
           <ListItem>
-            <StyledLink to="/">Create</StyledLink>
+            <StyledLink to="/">Generate</StyledLink>
           </ListItem>
           <ListItem>
-            <StyledLink to="/palettes">My Palettes</StyledLink>
+            <StyledLink to="/palettes">Explore</StyledLink>
           </ListItem>
-          <ListItem>
-            <StyledLink to="/create">Explore</StyledLink>
-          </ListItem>
+          {isAuthenticated && authData.username && (
+            <ListItem>
+              <StyledLink to={`/palettes/users/${authData.username}`}>
+                {authData.username}
+              </StyledLink>
+            </ListItem>
+          )}
         </List>
       </LeftSection>
 
       <RightSection>
-        <Hamburger onClick={handleMenuButtonClick} />
         <List>
-          <ListItem>
-            <StyledLink to="/login">Login</StyledLink>
-          </ListItem>
-          <ListItem>
-            <StyledLink to="/signup">Sign Up</StyledLink>
-          </ListItem>
+          {isAuthenticated
+            ? (
+              <ListItem>
+                <StyledLink to="/" onClick={logout}>Logout</StyledLink>
+              </ListItem>
+            ) : (
+              <>
+                <ListItem>
+                  <StyledLink to="/login">Login</StyledLink>
+                </ListItem>
+                <ListItem>
+                  <StyledLink to="/register">Register</StyledLink>
+                </ListItem>
+              </>
+            )}
         </List>
       </RightSection>
     </Nav>
@@ -49,16 +62,11 @@ const List = styled.ul`
   padding: 0;
   margin: 8px;
   align-items: center;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
 `;
 
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
-  background-color: white;
   height: 50px;
   padding: 15px;
 `;
@@ -67,11 +75,13 @@ const LeftSection = styled.div`
   display: flex;
   height: 100%;
   flex-grow: 1;
+  align-items: center;
 `;
 
 const RightSection = styled.div`
   display: flex;
   height: 100%;
+  align-items: center;
 `;
 
 const ListItem = styled.li`
@@ -88,18 +98,9 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const Logo = styled.img`
-  height: 100%;
-`;
-
-const Hamburger = styled(FiMenu)`
-  height: 100%;
-  font-size: 2em;
-  color: ${(props) => props.theme.colours.primary};
-  
-  @media (min-width: 768px) {
-    display: none;
-  }
+const StyledLogo = styled.span`
+  padding-left: 1.5em;
+  padding-right: 1.5em;
 `;
 
 export default Navbar;

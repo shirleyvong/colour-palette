@@ -22,3 +22,5 @@ server/api/__pycache__
 server/api/blueprints/__pycache__
 server/api/libquantize.so
 server/quantize/target
+server/build
+server/.env

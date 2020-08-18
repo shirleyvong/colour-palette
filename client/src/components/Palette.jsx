@@ -13,10 +13,10 @@ const Palette = ({ imageSource, colours }) => {
 
 const Content = styled.div`
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  max-width: 400px;
 `;
 
 const Image = styled.img`

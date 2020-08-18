@@ -15,11 +15,27 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - '5000:5000'
+      - 5000:5000
     environment:
+      - FLASK_DEBUG=1
+      - FLASK_ENV=development
       - FLASK_APP=api
-      - FLASK_ENV=DEVELOPMENT
+      - SECRET_KEY=notsosecretkey
+      - POSTGRES_URL=db:5432
+      - POSTGRES_USER=secret
+      - POSTGRES_PW=secret
+      - POSTGRES_DB=quantize-app
     volumes:
       - ./server/:/app/
     depends_on:
       - db
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_SERVICES_HOST=/api
+    ports:
+      - '80:80'
+    depends_on:
+      - server

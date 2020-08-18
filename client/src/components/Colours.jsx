@@ -3,6 +3,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import tinycolor from 'tinycolor2';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   display: flex;
@@ -17,14 +19,13 @@ const StyledColour = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
-  margin: 5px 0 5px 0;
   width: 100%;
-  height: 100%;
+  padding: 10px;
+  margin: 5px 0 5px 0;
   background-color: ${(props) => props.colour};
   color: ${(props) => props.textColour};
   border-radius: 10px;
-  box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.12), 0px 6px 12px rgba(0,0,0,0.08);
+  box-sizing: border-box;
 `;
 
 const Text = styled.div`
@@ -42,16 +43,20 @@ const Colours = ({ colours }) => {
     return 'black';
   };
 
+  const onCopy = () => {
+    toast('🎉 Copied!')
+  }
+
   return (
     <Container>
       { colours.map((colour) => (
-        <StyledColour colour={colour} textColour={getTextColour(colour)}>
+        <StyledColour colour={colour} textColour={getTextColour(colour)} key={colour}>
           <CopyToClipboard text={colour}>
-            <Text>{colour}</Text>
+            <Text onClick={onCopy}>{colour}</Text>
           </CopyToClipboard>
-          <CopyToClipboard text={tinycolor(colour).toRgbString()}>
-            <Text>{tinycolor(colour).toRgbString()}</Text>
-          </CopyToClipboard>
+          {/* <CopyToClipboard text={tinycolor(colour).toRgbString()}>
+            <Text onClick={onCopy}>{tinycolor(colour).toRgbString()}</Text>
+          </CopyToClipboard> */}
         </StyledColour>
       ))}
     </Container>

@@ -10,7 +10,7 @@ def register():
   if body is None:
     return 'Request body must be in JSON', 400
   if not body.get('username') or not body.get('password'):
-    return 'Request body must contain username and password', 400
+    return 'Missing username and/or password', 400
 
   try:
     user = User.query.filter_by(username=body['username']).first()
@@ -21,11 +21,12 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    auth_token = new_user.encode_auth_token(new_user.id)
+    auth_token, expiry_date = new_user.encode_auth_token(new_user.id)
 
     return {
       'auth_token': auth_token.decode(),
-      'id': new_user.id,
+      'expiry_date': expiry_date,
+      'user_id': new_user.id,
       'username': new_user.username
     }, 201
   except Exception as e:
@@ -39,18 +40,20 @@ def login():
   if body is None:
     return 'Request body must be in JSON', 400
   if not body.get('username') or not body.get('password'):
-    return 'Request body must contain username and password', 400
+    return 'Missing username and/or password', 400
 
   try:
     user = User.query.filter_by(username=body['username']).first()
     if user and bcrypt.check_password_hash(user.password, body['password']):
-      auth_token = user.encode_auth_token(user.id)
-      return {
-      'auth_token': auth_token.decode(),
-      'id': user.id,
-      'username': user.username
-      }, 200
+      auth_token, expiry_date = user.encode_auth_token(user.id)
 
+      return {
+        'auth_token': auth_token.decode(),
+        'expiry_date': expiry_date,
+        'user_id': user.id,
+        'username': user.username
+      }, 200
+    
     return 'The username and password combination does not exist.', 404
   except Exception as e:
     app.logger.info(e)
@@ -67,7 +70,11 @@ def status():
         result = User.decode_auth_token(auth_token)
         if not isinstance(result, str):
           user = User.query.filter_by(id=result).first()
-          return { 'id': user.id, 'username': user.username }, 200
+
+          return {
+            'user_id': user.id,
+            'username': user.username
+          }, 200
         else:
           # invalid token
           return result, 401
@@ -88,11 +95,17 @@ def logout():
       try:
         result = User.decode_auth_token(auth_token)
         if not isinstance(result, str):
+          user = User.query.filter_by(id=result).first()
+          res = {
+            'user_id': user.id,
+            'username': user.username
+          }
+
           blacklisted_token = BlacklistedToken(token=auth_token)
           db.session.add(blacklisted_token)
           db.session.commit()
 
-          return '', 200
+          return res, 200
         else:
           # invalid token
           return result, 401

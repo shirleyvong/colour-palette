@@ -137,9 +137,19 @@ def delete_palette(id):
       try:
         result = User.decode_auth_token(auth_token)
         if not isinstance(result, str):
-          Palette.query.filter_by(id=id).delete()
+          palette = Palette.query.get(id)
+          user = User.query.get(palette.user_id)
+
+          res = {
+            'id': palette.id,
+            'user_id': palette.user_id,
+            'username': user.username
+          }
+
+          db.session.delete(palette)
           db.session.commit()
-          return ({ 'id': id }, 200)
+
+          return res, 200
         else:
           # invalid token
           return result, 401
@@ -152,9 +162,12 @@ def delete_palette(id):
 def get_palette(palette_id):
   try:
     palette = Palette.query.get(palette_id)
+    user = User.query.get(palette.user_id)
+
     return {
       'id': palette.id,
       'user_id': palette.user_id,
+      'username': user.username,
       'colours': ['#{}'.format(colour) for colour in palette.colours],
       'image': base64.b64encode(palette.image).decode('ascii'),
     }
@@ -163,16 +176,37 @@ def get_palette(palette_id):
     return 'Something unexpected happened, try again later', 500
 
 
-@palette.route('/users/<user_id>')
-def get_palettes_by_user(user_id):
+# @palette.route('/users/<user_id>')
+# def get_palettes_by_user_id(user_id):
+#   try:
+#     palettes = Palette.query.filter_by(user_id=user_id)
+
+#     results = []
+#     for p in palettes:
+#       results.append({
+#       'id': p.id,
+#       'user_id': p.user_id,
+#       'colours': ['#{}'.format(colour) for colour in p.colours],
+#     })
+
+#     return { 'palettes': results }
+#   except Exception as e:
+#     app.logger.info(e)
+#     return 'Something unexpected happened, try again later', 500
+
+
+@palette.route('/users/<username>')
+def get_palettes_by_username(username):
   try:
-    palettes = Palette.query.filter_by(user_id=user_id)
+    user = User.query.filter_by(username=username).first()
+    palettes = Palette.query.filter_by(user_id=user.id)
 
     results = []
     for p in palettes:
       results.append({
       'id': p.id,
-      'user_id': p.user_id,
+      'user_id': user.id,
+      'username': user.username,
       'colours': ['#{}'.format(colour) for colour in p.colours],
     })
 
