@@ -26,3 +26,4 @@ When generating a palette, the image is reduced to under 100x100 pixels and 5 co
 - **Rust**: Colour quantization algorithm
 - **cpython**: FFI for calling Rust code from Python
 - **PostgreSQL**
+- **Docker**
